@@ -1,0 +1,6 @@
+venvBackend/
+__pycache__/
+*.pyc
+.env
+*.db
+.vscode/
