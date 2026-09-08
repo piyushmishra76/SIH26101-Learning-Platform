@@ -14,6 +14,7 @@ from app.api.recommendations import (
 from app.models.quiz import Quiz, Question, QuizAttempt
 from app.models.training import TrainingHistory
 from app.api.admin import router as admin_router
+from app.api.training import router as training_router  
 from app.api.quizzes import router as quiz_router
 app = FastAPI(
     title="SIH26101 Learning Platform API",
@@ -27,6 +28,7 @@ app.include_router(course_router)
 app.include_router(recommendation_router)
 app.include_router(quiz_router)
 app.include_router(admin_router)
+app.include_router(training_router)  # Include the training router
 Base.metadata.create_all(bind=engine)
 
 

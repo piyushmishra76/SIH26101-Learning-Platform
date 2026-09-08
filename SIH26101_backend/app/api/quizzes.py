@@ -66,6 +66,29 @@ def get_quizzes(
         .order_by(Quiz.id.desc())
         .all()
     )
+@router.get("/my-attempts")
+def get_my_attempts(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    attempts=(db.query(QuizAttempt,Quiz)
+        .join(Quiz, QuizAttempt.quiz_id == Quiz.id)
+        .filter(
+            QuizAttempt.user_id == current_user.id
+        )
+        .all()
+    )
+    results=[]
+    for attempt,quiz in attempts:
+        results.append({
+            "attempt_id": attempt.id,
+            "quiz_id": quiz.id,
+            "quiz_title": quiz.title,
+            "score": attempt.score,
+            "total_questions": attempt.total_questions,
+            "percentage": attempt.percentage
+        })
+    return results
 @router.get(
     "/{quiz_id}",
     response_model=QuizResponse
