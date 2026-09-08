@@ -2,102 +2,306 @@
 
 Backend prototype for **SIH26101**, an AI-enabled learning platform intended to strengthen capacity building within India's Official Statistical System.
 
-The current implementation provides the core backend foundation: authentication, role-based authorization, competency profiles, skill-gap calculation, course cataloguing, recommendation logic, training history, and quiz creation/evaluation. The document-to-MCQ AI pipeline and external iGOT integration are planned next and are **not represented as completed features** in this README.
+The platform is designed to support:
 
-## Current Backend Status
+- Employee competency profiling
+- Skill-gap identification
+- Personalized training recommendations
+- Course enrollment and progress tracking
+- Competency-based assessments
+- Learning analytics
+- AI-generated quizzes from learning materials
+- Future integration with iGOT Karmayogi and other learning resources
 
-### Implemented
-- FastAPI application with Swagger/OpenAPI documentation
-- SQLite database with SQLAlchemy ORM
-- User registration and login
-- Password hashing using `pwdlib` with Argon2
+> **Current status:** The core backend and learning-management functionality are implemented. AI-based document-to-MCQ generation, advanced recommendations, admin management enhancements, and external iGOT integration are planned/in progress and are not represented as completed features.
+
+---
+
+# Current Backend Status
+
+## Implemented
+
+### Backend Foundation
+
+- FastAPI application
+- Swagger/OpenAPI documentation
+- SQLite database for development
+- SQLAlchemy ORM
+- Pydantic schemas
 - JWT-based authentication
+- Password hashing using `pwdlib` with Argon2
+- Role-based authorization
+- Database seed script
+
+### User & Authentication
+
+- User registration
+- User login
+- JWT access tokens
 - Protected user profile endpoint
-- Role-based authorization for learners, trainers, and admins
+- Learner, trainer, and admin roles
+- User-specific protected APIs
+
+### Competency Management
+
 - Competency catalogue
-- User competency scores and competency levels
+- User competency profiles
+- Competency scores
+- Competency levels
 - Skill-gap calculation
+- Competency-based learning structure
+
+### Course Management
+
 - Course catalogue
+- Course information
 - Course-to-competency mapping
-- Rule-based personalized course recommendation engine (V1)
-- Training history tracking
-- Quiz, question, and quiz-attempt data models
-- Quiz creation and question management
-- Published-quiz question retrieval
-- Quiz submission and score calculation
-- Competency score update from quiz performance
-- Database seed script for initial competencies and courses
+- Course difficulty and duration
+- Course provider/source information
+- External course URL support
+- Active/inactive course status
 
-### Planned / In Progress
-- AI generation of MCQs and quizzes from uploaded PDF/PPT/DOCX learning material
-- Document text extraction, chunking, and validation pipeline
-- AI-generated-question review/approval workflow
-- Advanced recommendation signals such as training history and semantic similarity
-- iGOT Karmayogi integration through an integration/adapter layer
-- NSSTA course/training integration as supported by available interfaces/data
-- Admin analytics and workforce-level dashboards
-- Database migrations with Alembic
-- Production deployment, monitoring, and centralized logging
+### Recommendation Engine
 
-## Architecture
+- Rule-based personalized recommendation engine (V1)
+- Skill-gap based course recommendations
+- Course competency matching
+- Completed-course filtering
+- Recommendation scoring
+- Recommendation ranking
+- Top course recommendations
+
+### Training Management
+
+- Course enrollment
+- Training progress tracking
+- Training completion status
+- Completion percentage tracking
+- Training history
+- User-specific training history
+- Course completion timestamp
+
+### Quiz & Assessment
+
+- Quiz creation
+- Question creation
+- Question-to-competency mapping
+- Published quiz retrieval
+- Quiz question retrieval
+- Quiz submission
+- Automatic score calculation
+- Quiz percentage calculation
+- Competency performance calculation
+- Competency score updates
+- Quiz attempt storage
+- User-specific quiz attempt history
+
+### Learning Analytics
+
+- Total courses enrolled
+- Completed courses
+- In-progress courses
+- Average course completion percentage
+- Total quiz attempts
+- Average quiz percentage
+
+---
+
+# Project Progress
+
+## Phase 1 — Core Backend ✅
+
+- [x] User authentication with JWT
+- [x] Role-based authorization
+- [x] User profiles
+- [x] Competency profiles
+- [x] Skill-gap calculation
+- [x] Course catalogue
+- [x] Course-competency mapping
+- [x] Rule-based course recommendations
+- [x] Quiz creation and evaluation
+- [x] Database and seed data
+
+## Phase 2 — Learning Platform
+
+- [x] Course enrollment
+- [x] Training progress tracking
+- [x] Training history
+- [x] Quiz attempt history
+- [x] Learning analytics
+- [ ] Admin management
+
+## Phase 3 — AI Assessment Pipeline
+
+- [ ] PDF/PPT/DOCX upload
+- [ ] Document text extraction
+- [ ] Text cleaning and chunking
+- [ ] AI-based MCQ generation
+- [ ] Generated-question validation
+- [ ] AI-generated quiz creation
+- [ ] Trainer/admin review and approval
+
+## Phase 4 — Advanced Recommendations
+
+- [ ] Training-history based recommendation signals
+- [ ] Quiz-performance based recommendations
+- [ ] Role relevance
+- [ ] Semantic similarity
+- [ ] More advanced personalization
+
+## Phase 5 — External Learning Integration
+
+- [ ] iGOT Karmayogi integration
+- [ ] Integration/adapter layer
+- [ ] NSSTA course/training integration where supported by available interfaces/data
+
+## Phase 6 — Production Readiness
+
+- [ ] Alembic database migrations
+- [ ] PostgreSQL production database
+- [ ] Centralized logging
+- [ ] Production monitoring
+- [ ] Security hardening
+- [ ] Production deployment
+
+## Phase 7 — Final Integration
+
+- [ ] Frontend integration
+- [ ] End-to-end testing
+- [ ] Backend/frontend integration testing
+- [ ] Final deployment
+- [ ] SIH demonstration setup
+
+---
+
+# Architecture
+
+## Current Backend Architecture
 
 ```text
-                    Frontend
-                       |
-                       v
-                  FastAPI Backend
-                       |
-        +--------------+--------------+
-        |              |              |
-        v              v              v
- Authentication   Core APIs      Recommendation
-        |              |              |
-        v              v              v
-       JWT         SQLAlchemy     Skill-gap logic
-                       |              |
-                       +------+-------+
-                              |
-                              v
-                         SQLite (dev)
+                         Frontend
+                            |
+                            v
+                    FastAPI Backend
+                            |
+        +-------------------+-------------------+
+        |                   |                   |
+        v                   v                   v
+ Authentication        Core APIs          Recommendation
+        |                   |                   |
+        v                   v                   v
+       JWT              SQLAlchemy        Skill-gap Logic
+                            |
+              +-------------+-------------+
+              |             |             |
+              v             v             v
+           Users         Courses       Training
+                                        |
+                                        v
+                                     Quizzes
+                                        |
+                                        v
+                                    Analytics
+                                        |
+                                        v
+                                  SQLite (dev)
 ```
 
-Planned AI flow:
+---
+
+# Learning Flow
+
+The current platform follows this learning flow:
 
 ```text
-Learning Material (PDF/PPT/DOCX)
-                |
-                v
-        Text Extraction
-                |
-                v
-       Cleaning / Chunking
-                |
-                v
-          LLM / AI Layer
-                |
-                v
-       Structured MCQs/Quiz
-                |
-                v
-          Validation/Review
-                |
-                v
-       Questions + Quiz DB
-                |
-                v
-         Learner Assessment
-                |
-                v
-       Competency Update
-                |
-                v
-      Skill Gap Recalculation
-                |
-                v
-        New Recommendations
+User Registration
+       |
+       v
+User Profile
+       |
+       v
+Competency Assessment
+       |
+       v
+Skill-Gap Identification
+       |
+       v
+Personalized Course Recommendations
+       |
+       v
+Course Enrollment
+       |
+       v
+Training Progress Tracking
+       |
+       v
+Quiz / Assessment
+       |
+       v
+Quiz Performance
+       |
+       v
+Competency Update
+       |
+       v
+Skill-Gap Recalculation
+       |
+       v
+Updated Recommendations
 ```
 
-## Repository Structure
+---
+
+# Planned AI Flow
+
+The document-to-MCQ pipeline is planned as follows:
+
+```text
+Learning Material
+(PDF / PPT / DOCX)
+        |
+        v
+Document Upload
+        |
+        v
+Text Extraction
+        |
+        v
+Cleaning / Chunking
+        |
+        v
+LLM / AI Layer
+        |
+        v
+Structured MCQs
+        |
+        v
+Validation
+        |
+        v
+Trainer/Admin Review
+        |
+        v
+Quiz + Questions Database
+        |
+        v
+Learner Assessment
+        |
+        v
+Competency Update
+        |
+        v
+Skill-Gap Recalculation
+        |
+        v
+New Recommendations
+```
+
+> The AI pipeline shown above is a planned architecture and is not currently represented as a completed feature.
+
+---
+
+# Repository Structure
 
 ```text
 SIH26101/
@@ -105,6 +309,7 @@ SIH26101/
 +-- SIH26101_backend/
 |   |
 |   +-- app/
+|   |   |
 |   |   +-- api/
 |   |   |   +-- auth.py
 |   |   |   +-- users.py
@@ -112,9 +317,10 @@ SIH26101/
 |   |   |   +-- courses.py
 |   |   |   +-- recommendations.py
 |   |   |   +-- quizzes.py
+|   |   |   +-- training.py
 |   |   |   +-- admin.py
 |   |   |
-|   |   +-- database/
+|   |   +-- Database/
 |   |   |   +-- connection.py
 |   |   |
 |   |   +-- models/
@@ -125,26 +331,34 @@ SIH26101/
 |   |   |   +-- quiz.py
 |   |   |
 |   |   +-- schemas/
+|   |   |
 |   |   +-- services/
+|   |   |
 |   |   +-- utils/
+|   |   |
 |   |   +-- main.py
 |   |
 |   +-- seed.py
 |   +-- requirements.txt
 |   +-- .gitignore
-|   +-- venvBackend/        # local only; not committed
-|   +-- sih26101.db         # local development DB; not committed
+|   +-- venvBackend/       # local only; not committed
+|   +-- sih26101.db        # local development DB; not committed
 |
-+-- SIH26101_frontend/      # planned / team frontend
-+-- docs/                    # planned project documentation
++-- SIH26101_frontend/     # planned / team frontend
+|
++-- docs/                  # planned project documentation
+|
 +-- README.md
 ```
 
-> **Note:** On the current Windows development setup, the database package may appear as `Database` rather than `database`. Keep import paths consistent with the actual folder name on your checkout. For production/Linux, using lowercase package names consistently is recommended.
+> Keep Python import paths consistent with the actual package name on the development system. The current project uses `Database` as the database package name.
 
-## Technology Stack
+---
 
-### Backend
+# Technology Stack
+
+## Backend
+
 - Python 3.12
 - FastAPI
 - Uvicorn
@@ -152,26 +366,32 @@ SIH26101/
 - SQLAlchemy
 - SQLite (development)
 - PyJWT
-- pwdlib + Argon2
+- pwdlib
+- Argon2
 
-### Planned AI / Data Layer
+## Planned AI / Data Layer
+
 - PDF/PPT/DOCX parsing
 - LLM API
-- Embeddings / vector retrieval where needed
-- Structured JSON validation for generated questions
+- Structured JSON validation
+- Embeddings
+- Vector retrieval where required
 
-## Local Setup
+---
 
-### 1. Clone the repository
+# Local Setup
+
+## 1. Clone the Repository
 
 ```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
+
 cd SIH26101/SIH26101_backend
 ```
 
-### 2. Create a virtual environment
+## 2. Create a Virtual Environment
 
-Windows PowerShell:
+### Windows PowerShell
 
 ```powershell
 python -m venv venvBackend
@@ -184,15 +404,15 @@ If the environment already exists:
 .\venvBackend\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Seed development data
+## 4. Seed Development Data
 
-The seed script inserts the initial competency and course catalogue used by the current recommendation prototype.
+The seed script inserts initial competencies, courses, and course-competency mappings used for development and recommendation testing.
 
 ```bash
 python seed.py
@@ -204,7 +424,7 @@ Expected output:
 Database seeded successfully.
 ```
 
-### 5. Start the API
+## 5. Start the API
 
 ```bash
 uvicorn app.main:app --reload
@@ -228,18 +448,20 @@ ReDoc:
 http://127.0.0.1:8000/redoc
 ```
 
-## Core API Endpoints
+---
 
-The exact endpoint set may evolve as the project develops. The current backend includes the following core routes.
+# Core API Endpoints
 
-### Authentication
+The endpoint set may evolve as development continues. The following represents the current backend API structure.
+
+## Authentication
 
 ```http
 POST /auth/register
 POST /auth/login
 ```
 
-### User
+## User
 
 ```http
 GET  /users/me
@@ -249,14 +471,14 @@ GET  /users/me/skill-gaps
 GET  /users/me/recommendations/
 ```
 
-### Competencies
+## Competencies
 
 ```http
 GET  /competencies/
 POST /competencies/
 ```
 
-### Courses
+## Courses
 
 ```http
 GET  /courses/
@@ -265,7 +487,38 @@ GET  /courses/{course_id}
 POST /courses/{course_id}/competencies
 ```
 
-### Quizzes
+## Training
+
+```http
+POST  /training/enroll/{course_id}
+PATCH /training/{training_id}/progress
+GET   /training/my-history
+GET   /training/analytics
+```
+
+### Training API Responsibilities
+
+```text
+POST /training/enroll/{course_id}
+        |
+        +--> Creates a training record for the current user
+
+PATCH /training/{training_id}/progress
+        |
+        +--> Updates completion percentage
+        +--> Updates training status
+        +--> Stores completion timestamp when completed
+
+GET /training/my-history
+        |
+        +--> Returns current user's training records
+
+GET /training/analytics
+        |
+        +--> Returns learning statistics for current user
+```
+
+## Quizzes
 
 ```http
 POST /quizzes/
@@ -274,17 +527,20 @@ GET  /quizzes/{quiz_id}
 POST /quizzes/{quiz_id}/questions
 GET  /quizzes/{quiz_id}/questions
 POST /quizzes/{quiz_id}/submit
+GET  /quizzes/my-attempts
 ```
 
-### Admin
+## Admin
 
 ```http
 GET /admin/users
 ```
 
-Additional admin endpoints will be added as the admin workflow is completed.
+Additional admin endpoints will be added as the admin management workflow is completed.
 
-## Authentication and Authorization
+---
+
+# Authentication and Authorization
 
 Authentication is JWT-based.
 
@@ -292,8 +548,8 @@ After login, the client receives an access token:
 
 ```json
 {
-  "access_token": "<JWT>",
-  "token_type": "bearer"
+    "access_token": "<JWT>",
+    "token_type": "bearer"
 }
 ```
 
@@ -311,11 +567,71 @@ trainer
 admin
 ```
 
-Authentication answers **who the user is**; authorization answers **what the user is allowed to do**.
+Authentication answers:
 
-## Recommendation Engine (V1)
+> **Who is the user?**
 
-The current recommendation engine is intentionally transparent and deterministic. It is **not a trained machine-learning recommender**.
+Authorization answers:
+
+> **What is the user allowed to do?**
+
+The backend uses protected dependencies to restrict access to user-specific and role-specific operations.
+
+---
+
+# Database Design
+
+The backend uses SQLAlchemy ORM to interact with the database.
+
+Important entities include:
+
+```text
+User
+ |
+ +---- Competency Profile
+ |
+ +---- TrainingHistory
+ |          |
+ |          +---- Course
+ |
+ +---- QuizAttempt
+            |
+            +---- Quiz
+```
+
+Additional relationships include:
+
+```text
+Course
+ |
+ +---- CourseCompetency
+            |
+            +---- Competency
+
+Quiz
+ |
+ +---- Question
+            |
+            +---- Competency
+```
+
+The application uses these relationships to support:
+
+- Competency tracking
+- Course recommendations
+- Training enrollment
+- Training progress
+- Quiz attempts
+- Learning analytics
+- Competency updates after assessments
+
+---
+
+# Recommendation Engine (V1)
+
+The current recommendation engine is intentionally transparent and deterministic.
+
+It is **not a trained machine-learning recommender**.
 
 Current flow:
 
@@ -326,7 +642,7 @@ Current Competency
 Required Competency
         |
         v
-     Skill Gap
+Skill Gap
         |
         v
 Find Courses Mapped to Competency
@@ -344,14 +660,24 @@ Rank Courses
 Return Top Recommendations
 ```
 
-The current scoring logic uses competency gap and course-level fit. This is a baseline that can later be extended with role relevance, quiz performance, training history, and semantic similarity.
+The current scoring logic uses competency gap and course-level fit.
 
-## Competency Levels
+This is a baseline that can later be extended using:
 
-The current backend maps percentage scores to competency levels as follows:
+- Role relevance
+- Training history
+- Quiz performance
+- Learning progress
+- Semantic similarity
+
+---
+
+# Competency Levels
+
+The current backend maps competency scores to levels as follows:
 
 | Score | Level |
-|---:|---:|
+|------:|------:|
 | 0–39 | 1 |
 | 40–59 | 2 |
 | 60–74 | 3 |
@@ -364,30 +690,123 @@ Skill gap is currently calculated as:
 max(required_level - current_level, 0)
 ```
 
-## Quiz Evaluation
+---
 
-A quiz question can be linked to a competency. During submission, the backend:
+# Training Management
 
-1. Evaluates submitted answers against the stored correct answers.
+The training system uses the `TrainingHistory` model to track the learner's relationship with courses.
+
+A training record stores information such as:
+
+- User
+- Course
+- Training status
+- Completion percentage
+- Enrollment timestamp
+- Completion timestamp
+
+Current training statuses include:
+
+```text
+enrolled
+in_progress
+completed
+```
+
+Current flow:
+
+```text
+Course
+  |
+  v
+Enrollment
+  |
+  v
+TrainingHistory
+  |
+  v
+Progress Updates
+  |
+  +---- 0–99% --> in_progress
+  |
+  +---- 100% --> completed
+```
+
+---
+
+# Quiz Evaluation
+
+A quiz question can be linked to a competency.
+
+During quiz submission, the backend:
+
+1. Evaluates submitted answers against stored correct answers.
 2. Calculates the overall quiz score.
-3. Groups performance by competency where `competency_id` is present.
-4. Updates the learner's competency score and level.
-5. Stores the quiz attempt.
-6. Allows the recommendation engine to use the updated competency profile.
+3. Calculates the quiz percentage.
+4. Groups performance by competency where `competency_id` is present.
+5. Updates the learner's competency score and level.
+6. Stores the quiz attempt.
+7. Makes the updated competency profile available to the recommendation engine.
 
 This creates the current adaptive-learning loop:
 
 ```text
 Quiz Attempt
-    -> Competency Performance
-    -> Updated Competency Level
-    -> New Skill Gap
-    -> Updated Recommendation
+      |
+      v
+Competency Performance
+      |
+      v
+Updated Competency Level
+      |
+      v
+New Skill Gap
+      |
+      v
+Updated Recommendation
 ```
 
-## Seed Data
+---
 
-`seed.py` creates initial development data for competencies and courses and maps courses to competencies. It is intended for development/demo setup, not as a substitute for production data management.
+# Learning Analytics
+
+The current learning analytics endpoint is:
+
+```http
+GET /training/analytics
+```
+
+It provides user-specific learning statistics including:
+
+```text
+Total Courses Enrolled
+Completed Courses
+In-Progress Courses
+Average Course Progress
+Total Quiz Attempts
+Average Quiz Percentage
+```
+
+Example response:
+
+```json
+{
+    "total_courses": 4,
+    "completed_courses": 2,
+    "in_progress_courses": 2,
+    "average_progress": 72.5,
+    "quizzes_attempted": 5,
+    "average_quiz_percentage": 81.4
+}
+```
+
+The values depend on the user's actual training and quiz activity.
+
+---
+
+# Seed Data
+
+`seed.py` creates initial development data for competencies and courses and maps courses to competencies.
 
 The current seed data includes competencies such as:
 
@@ -398,9 +817,21 @@ The current seed data includes competencies such as:
 - SDG Indicators
 - Data Visualization
 
-and example courses from iGOT/NSSTA-style sources used for prototype testing.
+Example development courses include:
 
-## Database
+- Sampling Fundamentals
+- Advanced Sampling Techniques
+- Data Quality Management
+- Survey Design Principles
+- SDG Indicators and Statistics
+
+The seed data is intended for development and demonstration purposes.
+
+It is **not a replacement for production data management or live iGOT/NSSTA data**.
+
+---
+
+# Database
 
 SQLite is used for the current development prototype because it is simple to run locally.
 
@@ -416,11 +847,34 @@ The virtual environment is also ignored:
 venvBackend/
 ```
 
-Teammates should recreate the environment with `requirements.txt` and initialise development data with `python seed.py`.
+Do not commit:
+
+```text
+venvBackend/
+.env
+*.db
+API keys
+JWT secrets
+__pycache__/
+```
+
+Teammates should recreate the environment using:
+
+```bash
+pip install -r requirements.txt
+```
+
+and initialise development data using:
+
+```bash
+python seed.py
+```
 
 For production, the project is expected to move to PostgreSQL and use Alembic migrations.
 
-## Team Development Guidelines
+---
+
+# Team Development Guidelines
 
 Use feature branches instead of committing directly to `main` for larger changes.
 
@@ -428,8 +882,11 @@ Example:
 
 ```bash
 git checkout -b feature/quiz-history
+
 git add .
+
 git commit -m "Add quiz history API"
+
 git push origin feature/quiz-history
 ```
 
@@ -441,28 +898,93 @@ Before starting new work:
 git pull
 ```
 
-Do **not** commit:
+Recommended workflow:
 
-- `venvBackend/`
-- `.env`
-- `*.db`
-- API keys or JWT secrets
-- `__pycache__/`
+```text
+main
+ |
+ +---- feature/backend
+ |
+ +---- feature/frontend
+ |
+ +---- feature/ai-mcq
+ |
+ +---- feature/admin
+```
 
-## Current Scope vs. Target Scope
+Changes should be reviewed before being merged into `main`.
+
+---
+
+# Frontend Integration
+
+The frontend is being developed separately by the team.
+
+Once the backend API structure is stable, the backend team will provide an API contract containing:
+
+- Endpoint
+- HTTP method
+- Authentication requirements
+- User role requirements
+- Request body
+- Path/query parameters
+- Response structure
+- Error responses
+- Example requests and responses
+
+The frontend can then consume the FastAPI endpoints through HTTP requests.
+
+Basic communication flow:
+
+```text
+Frontend
+    |
+    | HTTP Request
+    v
+FastAPI Backend
+    |
+    v
+Business Logic
+    |
+    v
+SQLAlchemy
+    |
+    v
+Database
+    |
+    v
+JSON Response
+    |
+    v
+Frontend UI
+```
+
+---
+
+# Current Scope vs Target Scope
 
 The project is being built incrementally.
 
-### Current
+## Current Scope
 
-The backend already provides the platform foundation needed for learners, competencies, courses, recommendations, and quizzes.
+The backend currently provides the foundation for:
 
-### Target
+- Users
+- Authentication
+- Competencies
+- Skill gaps
+- Courses
+- Recommendations
+- Training
+- Quizzes
+- Learning analytics
 
-The complete SIH solution will add:
+## Target Scope
+
+The complete SIH solution is planned to support:
 
 ```text
-Official/Employee Profile
+Official / Employee Profile
         |
         v
 Competency Assessment
@@ -493,8 +1015,74 @@ Adaptive Recommendations
         |
         v
 Admin / Workforce Analytics
+        |
+        v
+External Learning Platform Integration
 ```
 
-## Project Disclaimer
+---
 
-This repository currently contains a **working prototype backend**, not a production-ready government deployment. Any future claim of iGOT integration, NSSTA integration, AI-generated assessment, production security, scalability, or deployment should be backed by the corresponding implemented service/interface and authorized access.
+# Future Enhancements
+
+The following features are planned for future development:
+
+## AI-Based Assessment
+
+- Automatic extraction of text from learning materials
+- AI-generated MCQs
+- Difficulty-aware question generation
+- Competency-aware question generation
+- Question validation
+- Trainer/admin approval
+
+## Advanced Personalization
+
+- Learning history
+- Quiz performance
+- Role relevance
+- Course similarity
+- Semantic search
+- Improved recommendation ranking
+
+## Integration
+
+- iGOT Karmayogi integration
+- NSSTA-related learning resources where supported
+- External course synchronization
+
+## Administration
+
+- Course management
+- Quiz management
+- User management
+- Trainer workflows
+- Workforce-level analytics
+
+## Production
+
+- PostgreSQL
+- Alembic migrations
+- Centralized logging
+- Monitoring
+- Secure configuration
+- Deployment
+- Scalability improvements
+
+---
+
+# Project Disclaimer
+
+This repository currently contains a **working prototype backend**, not a production-ready government deployment.
+
+Any future claim of:
+
+- iGOT integration
+- NSSTA integration
+- AI-generated assessment
+- Production security
+- Scalability
+- Government deployment
+
+should be backed by the corresponding implemented service, interface, or authorized integration.
+
+The current course and competency seed data is intended for development and demonstration purposes.
