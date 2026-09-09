@@ -11,6 +11,10 @@ from app.schemas.course import (
     CourseResponse,
     CourseCompetencyCreate
 )
+from app.models.user import User
+from app.utils.dependencies import (
+    get_current_trainer_or_admin
+)
 
 router = APIRouter(
     prefix="/courses",
@@ -24,6 +28,7 @@ router = APIRouter(
 )
 def create_course(
     course_data: CourseCreate,
+    current_user: User = Depends(get_current_trainer_or_admin),
     db: Session = Depends(get_db)
 ):
     course = Course(
@@ -84,6 +89,7 @@ def get_course(
 def add_course_competency(
     course_id: int,
     mapping: CourseCompetencyCreate,
+    current_user: User = Depends(get_current_trainer_or_admin),
     db: Session = Depends(get_db)
 ):
     course = (

@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from app.models.user import User
 from app.Database.connection import get_db
 from app.models.competency import Competency
 from app.schemas.competency import (
     CompetencyCreate,
     CompetencyResponse
 )
-
+from app.utils.dependencies import (
+    get_current_trainer_or_admin
+)
 
 router = APIRouter(
     prefix="/competencies",
@@ -21,6 +23,7 @@ router = APIRouter(
 )
 def create_competency(
     competency_data: CompetencyCreate,
+    current_user: User = Depends(get_current_trainer_or_admin),
     db: Session = Depends(get_db)
 ):
     existing_competency = (

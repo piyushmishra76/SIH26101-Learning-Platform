@@ -26,6 +26,11 @@ from app.schemas.quiz import (
     QuizSubmit,
     QuizResultResponse
 )
+from app.utils.dependencies import (
+    get_current_user,
+    get_current_trainer_or_admin,
+    get_current_admin
+)
 router = APIRouter(
     prefix="/quizzes",
     tags=["Quizzes"]
@@ -38,7 +43,9 @@ router = APIRouter(
 )
 def create_quiz(
     quiz_data: QuizCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(
+    get_current_trainer_or_admin
+),
     db: Session = Depends(get_db)
 ):
     quiz = Quiz(
@@ -117,7 +124,9 @@ def get_quiz(
 def add_question(
     quiz_id: int,
     question_data: QuestionCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(
+    get_current_trainer_or_admin
+),
     db: Session = Depends(get_db)
 ):
     quiz = (
@@ -363,3 +372,86 @@ def get_quiz_questions(
         )
         .all()
     )
+@router.post("/{quiz_id}/publish")
+def publish_quiz(
+    quiz_id: int,
+    current_user: User = Depends(
+        get_current_trainer_or_admin
+    ),
+    db: Session = Depends(get_db)
+):
+    quiz = (
+        db.query(Quiz)
+        .filter(Quiz.id == quiz_id)
+        .first()
+    )
+
+    if quiz is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Quiz not found"
+        )
+
+    if (
+        current_user.role != "admin"
+        and quiz.created_by != current_user.id
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="You cannot publish this quiz"
+        )
+
+    questions_count = (
+        db.query(Question)
+        .filter(
+            Question.quiz_id == quiz_id,
+            Question.is_active == True
+        )
+        .count()
+    )
+
+    if questions_count == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Quiz must have at least one question"
+        )
+
+    quiz.status = "published"
+
+    db.commit()
+    db.refresh(quiz)
+
+    return {
+        "message": "Quiz published successfully",
+        "quiz_id": quiz.id,
+        "status": quiz.status
+    }
+
+@router.post("/{quiz_id}/unpublish")
+def unpublish_quiz(
+    quiz_id: int,
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    quiz = (
+        db.query(Quiz)
+        .filter(Quiz.id == quiz_id)
+        .first()
+    )
+
+    if quiz is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Quiz not found"
+        )
+
+    quiz.status = "draft"
+
+    db.commit()
+    db.refresh(quiz)
+
+    return {
+        "message": "Quiz unpublished successfully",
+        "quiz_id": quiz.id,
+        "status": quiz.status
+    }
