@@ -13,14 +13,27 @@ The platform is designed to support:
 - AI-generated quizzes from learning materials
 - Future integration with iGOT Karmayogi and other learning resources
 
-> **Current status:** The core backend and learning-management functionality are implemented. AI-based document-to-MCQ generation, advanced recommendations, admin management enhancements, and external iGOT integration are planned/in progress and are not represented as completed features.
+> > **Current status:** The core backend, learning-management functionality, document management, and AI-assisted assessment pipeline are implemented and tested. The platform currently supports PDF-based MCQ generation, trainer/admin review and approval, role-based AI access, and competency-aware question generation. Live iGOT integration, production deployment, and advanced personalization remain future work.
 
 ---
 
 # Current Backend Status
 
 ## Implemented
+### AI-Assisted Assessment Generation
 
+- PDF text extraction
+- Text cleaning
+- Text chunking
+- Gemini-based MCQ generation
+- Structured MCQ output
+- MCQ validation
+- Exact duplicate removal
+- AI-generated explanations
+- Competency-aware question generation
+- Trainer/admin-only AI generation
+- Trainer/admin question approval
+- Approved questions stored in the existing quiz question database
 ### Backend Foundation
 
 - FastAPI application
@@ -105,6 +118,16 @@ The platform is designed to support:
 - Total quiz attempts
 - Average quiz percentage
 
+### Document Management
+
+- PDF document upload
+- Document metadata storage
+- Uploader tracking
+- Document upload timestamp
+- Document review status
+- Trainer/admin document listing
+- Document approval and rejection
+- Learner document submission support
 ---
 
 # Project Progress
@@ -129,18 +152,24 @@ The platform is designed to support:
 - [x] Training history
 - [x] Quiz attempt history
 - [x] Learning analytics
-- [ ] Admin management
+- [x] Admin management
 
 ## Phase 3 — AI Assessment Pipeline
 
-- [ ] PDF/PPT/DOCX upload
-- [ ] Document text extraction
-- [ ] Text cleaning and chunking
-- [ ] AI-based MCQ generation
-- [ ] Generated-question validation
-- [ ] AI-generated quiz creation
-- [ ] Trainer/admin review and approval
-
+- [x] PDF upload
+- [x] Document metadata management
+- [x] Document approval/rejection workflow
+- [x] PDF text extraction
+- [x] Text cleaning
+- [x] Text chunking
+- [x] AI-based MCQ generation
+- [x] Generated-question validation
+- [x] Exact duplicate removal
+- [x] AI-generated explanations
+- [x] Competency-aware question generation
+- [x] Trainer/admin review and approval
+- [x] Approved question storage
+- [x] Quiz publishing
 ## Phase 4 — Advanced Recommendations
 
 - [ ] Training-history based recommendation signals
@@ -297,7 +326,7 @@ Skill-Gap Recalculation
 New Recommendations
 ```
 
-> The AI pipeline shown above is a planned architecture and is not currently represented as a completed feature.
+> The core PDF-to-MCQ AI pipeline is currently implemented. PDF/PPT/DOCX support is not yet complete; the current implementation supports PDF documents.
 
 ---
 
@@ -319,7 +348,8 @@ SIH26101/
 |   |   |   +-- quizzes.py
 |   |   |   +-- training.py
 |   |   |   +-- admin.py
-|   |   |
+|   |   |   +-- document.py
+|   |   |   +-- ai.py
 |   |   +-- Database/
 |   |   |   +-- connection.py
 |   |   |
@@ -329,12 +359,20 @@ SIH26101/
 |   |   |   +-- course.py
 |   |   |   +-- training.py
 |   |   |   +-- quiz.py
+|   |   |   +-- document.py
 |   |   |
 |   |   +-- schemas/
+|   |   |   +-- mcq.py
+|   |   |   +-- ai_question.py
 |   |   |
 |   |   +-- services/
+|   |   |   +-- gemini_service.py
 |   |   |
 |   |   +-- utils/
+|   |   |   +-- chunk.py
+|   |   |   +-- mcq_validator.py
+|   |   |   +-- mcq_dedup.py
+|   |   |   +-- text_preprocessing.py
 |   |   |
 |   |   +-- main.py
 |   |
@@ -451,8 +489,13 @@ http://127.0.0.1:8000/redoc
 ---
 
 # Core API Endpoints
+## Documents
 
-The endpoint set may evolve as development continues. The following represents the current backend API structure.
+```http
+POST  /documents/upload
+POST  /documents/extract/{filename}
+GET   /documents/
+PATCH /documents/{document_id}/status
 
 ## Authentication
 
@@ -539,6 +582,9 @@ GET /admin/users
 Additional admin endpoints will be added as the admin management workflow is completed.
 
 ---
+POST /ai/generate-mcqs
+POST /ai/generate-mcqs-from-pdf/{filename}
+POST /ai/quizzes/{quiz_id}/approve-mcqs
 
 # Authentication and Authorization
 
@@ -1026,14 +1072,13 @@ External Learning Platform Integration
 
 The following features are planned for future development:
 
-## AI-Based Assessment
-
-- Automatic extraction of text from learning materials
-- AI-generated MCQs
-- Difficulty-aware question generation
-- Competency-aware question generation
-- Question validation
-- Trainer/admin approval
+## In AI-Based Assessment
+- OCR for scanned PDFs
+- Semantic duplicate detection
+- Reliable page-level source tracking
+- Improved competency mapping
+- Retry/fallback handling for AI quota/errors
+- PPT/DOCX support
 
 ## Advanced Personalization
 
