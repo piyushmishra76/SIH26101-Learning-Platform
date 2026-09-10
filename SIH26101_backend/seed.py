@@ -3,7 +3,8 @@ from app.Database.connection import SessionLocal
 from app.models.competency import Competency
 from app.models.course import Course, CourseCompetency
 
-
+from app.models.user import User
+from app.utils.security import hash_password
 def seed_database():
     db = SessionLocal()
     try:
@@ -192,7 +193,23 @@ def seed_database():
 
                 db.add(mapping)
 
+        trainer = (
+            db.query(User)
+            .filter(
+                User.email == "trainer@sih.com"
+            )
+            .first()
+        )
 
+        if trainer is None:
+            trainer = User(
+                name="SIH Trainer",
+                email="trainer@sih.com",
+                password_hash=hash_password("trainer123"),
+                role="trainer"
+            )
+
+            db.add(trainer)
         db.commit()
 
         print("Database seeded successfully.")
