@@ -6,6 +6,160 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/ai/generate-mcqs": {
+      "post": {
+        "tags": [
+          "AI"
+        ],
+        "summary": "Generate Mcqs Endpoint",
+        "operationId": "generate_mcqs_endpoint_ai_generate_mcqs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCQGenerationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/ai/quizzes/{quiz_id}/approve-mcqs": {
+      "post": {
+        "tags": [
+          "AI"
+        ],
+        "summary": "Approve Ai Mcqs",
+        "operationId": "approve_ai_mcqs_ai_quizzes__quiz_id__approve_mcqs_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "quiz_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Quiz Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIQuestionApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/generate-mcqs-from-pdf/{filename}": {
+      "post": {
+        "tags": [
+          "AI"
+        ],
+        "summary": "Generate Mcqs From Pdf",
+        "operationId": "generate_mcqs_from_pdf_ai_generate_mcqs_from_pdf__filename__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Filename"
+            }
+          },
+          {
+            "name": "number_of_questions",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 5,
+              "title": "Number Of Questions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/me": {
       "get": {
         "tags": [
@@ -18,9 +172,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -158,9 +310,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -199,9 +349,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -436,9 +584,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -566,9 +712,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -813,9 +957,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -860,9 +1002,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -891,8 +1031,50 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/documents/upload": {
+      "post": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Upload Document",
+        "operationId": "upload_document_documents_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_document_documents_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
                 "schema": {
-
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -903,6 +1085,125 @@
             "HTTPBearer": []
           }
         ]
+      }
+    },
+    "/documents/": {
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Get Documents",
+        "operationId": "get_documents_documents__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/documents/extract/{filename}": {
+      "post": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Extract Pdf Text",
+        "operationId": "extract_pdf_text_documents_extract__filename__post",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Filename"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{document_id}/status": {
+      "patch": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Update Document Status",
+        "operationId": "update_document_status_documents__document_id__status_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/training/enroll/{course_id}": {
@@ -933,9 +1234,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -989,9 +1288,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           },
@@ -1020,9 +1317,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -1046,9 +1341,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -1069,9 +1362,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -1081,6 +1372,114 @@
   },
   "components": {
     "schemas": {
+      "AIQuestionApproval": {
+        "properties": {
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "option_a": {
+            "type": "string",
+            "title": "Option A"
+          },
+          "option_b": {
+            "type": "string",
+            "title": "Option B"
+          },
+          "option_c": {
+            "type": "string",
+            "title": "Option C"
+          },
+          "option_d": {
+            "type": "string",
+            "title": "Option D"
+          },
+          "correct_answer": {
+            "type": "string",
+            "pattern": "^[ABCD]$",
+            "title": "Correct Answer"
+          },
+          "difficulty": {
+            "type": "string",
+            "title": "Difficulty"
+          },
+          "competency_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Competency Id"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "source_page": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Page"
+          }
+        },
+        "type": "object",
+        "required": [
+          "question",
+          "option_a",
+          "option_b",
+          "option_c",
+          "option_d",
+          "correct_answer",
+          "difficulty"
+        ],
+        "title": "AIQuestionApproval"
+      },
+      "AIQuestionApprovalRequest": {
+        "properties": {
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/AIQuestionApproval"
+            },
+            "type": "array",
+            "title": "Questions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "questions"
+        ],
+        "title": "AIQuestionApprovalRequest"
+      },
+      "Body_upload_document_documents_upload_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_document_documents_upload_post"
+      },
       "CompetencyCreate": {
         "properties": {
           "name": {
@@ -1102,8 +1501,8 @@
           },
           "required_level": {
             "type": "integer",
-            "maximum": 5,
-            "minimum": 1,
+            "maximum": 5.0,
+            "minimum": 1.0,
             "title": "Required Level",
             "default": 3
           }
@@ -1191,15 +1590,15 @@
         "properties": {
           "competency_id": {
             "type": "integer",
-            "exclusiveMinimum": 0,
+            "exclusiveMinimum": 0.0,
             "title": "Competency Id"
           },
           "target_level": {
             "anyOf": [
               {
                 "type": "integer",
-                "maximum": 5,
-                "minimum": 1
+                "maximum": 5.0,
+                "minimum": 1.0
               },
               {
                 "type": "null"
@@ -1253,7 +1652,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1
+                "minimum": 1.0
               },
               {
                 "type": "null"
@@ -1365,6 +1764,19 @@
         ],
         "title": "CourseResponse"
       },
+      "DocumentStatusUpdate": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "DocumentStatusUpdate"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1377,6 +1789,24 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "MCQGenerationRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "number_of_questions": {
+            "type": "integer",
+            "title": "Number Of Questions",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "MCQGenerationRequest"
       },
       "QuestionCreate": {
         "properties": {
@@ -1442,7 +1872,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1
+                "minimum": 1.0
               },
               {
                 "type": "null"
@@ -1783,13 +2213,13 @@
         "properties": {
           "competency_id": {
             "type": "integer",
-            "exclusiveMinimum": 0,
+            "exclusiveMinimum": 0.0,
             "title": "Competency Id"
           },
           "score": {
             "type": "integer",
-            "maximum": 100,
-            "minimum": 0,
+            "maximum": 100.0,
+            "minimum": 0.0,
             "title": "Score"
           }
         },
@@ -1908,7 +2338,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0
+                "minimum": 0.0
               },
               {
                 "type": "null"
